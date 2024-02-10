@@ -30,30 +30,39 @@ class ViewController: UIViewController {
     
     @IBAction func answerSubimitted(_ sender: UIButton) {
         
-        let userAnswer = sender.titleLabel!.text!
+        guard let userAnswer = sender.titleLabel?.text else{return}
+        
+        if userAnswer == "Restart"{
+            quizlogic.resetQuiz()
+            updateUI()
+            return
+        }
         
         let isCorrect = quizlogic.compareUserResponse(userAnswer)
         
-        if isCorrect{
-            sender.backgroundColor = UIColor.green
-        } else{
-            sender.backgroundColor = UIColor.red
-        }
+        sender.backgroundColor = isCorrect ? UIColor.green : UIColor.red
         
-        quizlogic.increaseIndex()
+        quizlogic.increaseIndex(selecOption: userAnswer)
         
-        Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateUI), userInfo: nil, repeats: false)
+        Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(updateUI), userInfo: nil, repeats: false)
     }
     
     @objc func updateUI(){
-        
-        questionLabel.text = quizlogic.getNextQuestion()
-        background.image = UIImage(named: "image\(quizlogic.getImageName())")
-        buttonOne.setTitle(quizlogic.getChoiceOne(), for: .normal)
-        buttonTwo.setTitle(quizlogic.getChoiceTwo(), for: .normal)
-        
-        buttonOne.backgroundColor = UIColor.clear
-        buttonTwo.backgroundColor = UIColor.clear
+        if quizlogic.isQuizCompleted() {
+            background.image = UIImage(named: quizlogic.finalBackgroundImageName())
+            questionLabel.text = "Quiz Completed"
+            buttonOne.setTitle("Restart", for: .normal)
+            buttonTwo.setTitle("Restart", for: .normal)
+            
+        }else{
+            questionLabel.text = quizlogic.getNextQuestion()
+            background.image = UIImage(named: "image\(quizlogic.getImageName())")
+            buttonOne.setTitle(quizlogic.getChoiceOne(), for: .normal)
+            buttonTwo.setTitle(quizlogic.getChoiceTwo(), for: .normal)
+            
+            buttonOne.backgroundColor = UIColor.clear
+            buttonTwo.backgroundColor = UIColor.clear
+        }
     }
+    
 }
-
