@@ -74,26 +74,33 @@ struct QuizLogic {
         path = ""
     }
     
-    func getNextQuestion() -> String {
-        if questionIndex == 0 {
+    
+    mutating func getNextQuestion() -> String {
+        if quizCompleted {
+            return "Quiz Complete"
+        } else if questionIndex == 0 {
             return questions[0].question
-        } else if path == "Speed up" {
+        } else if path == "Speed Up" && questionIndex == 1 {
             return questions[1].question
-        } else if path == "Slow Down" {
+        } else if path == "Slow Down" && questionIndex == 1 {
             return questions[2].question
+        } else {
+            return "Quiz Complete"
         }
-        return "Quiz Complete"
     }
     
-    func getChoiceOne() -> String {
-        if questionIndex == 0 {
+    mutating func getChoiceOne() -> String {
+        if quizCompleted {
+            return "Restart"
+        } else if questionIndex == 0 {
             return questions[0].option_one
-        } else if path == "Speed up" {
+        } else if path == "Speed Up" && questionIndex == 1 {
             return questions[1].option_one
-        } else if path == "Slow Down" {
+        } else if path == "Slow Down" && questionIndex == 1 {
             return questions[2].option_one
+        } else {
+            return "Restart"
         }
-        return "Restart"
     }
         
     func getChoiceTwo() -> String {
